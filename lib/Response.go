@@ -1,4 +1,4 @@
-package main
+package lib
 
 // Response .
 type Response struct {
@@ -6,6 +6,11 @@ type Response struct {
 	Message       string `json:"message"`
 	Notify        bool   `json:"notify"`
 	MessageFormat string `json:"message_format"`
+}
+
+// NewResponse .
+func NewResponse(card *MTGRetrieverResponse) *Response {
+	return &Response{}
 }
 
 // {
