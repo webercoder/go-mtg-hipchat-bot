@@ -12,35 +12,46 @@ type (
 		URL string
 	}
 
-	// MTGRetrieverResponse .
-	MTGRetrieverResponse struct {
-		Name     string   `json:"name"`
-		StoreURL string   `json:"store_url"`
-		Types    []string `json:"types"`
-		Cost     string   `json:"cost"`
-		Text     string   `json:"text"`
+	// MTGRetrieverResponseItem .
+	MTGRetrieverResponseItem struct {
+		Name     string            `json:"name"`
+		ID       string            `json:"id"`
+		URL      string            `json:"url"`
+		StoreURL string            `json:"store_url"`
+		Types    []string          `json:"types"`
+		Colors   []string          `json:"colors"`
+		CMC      int               `json:"cmc"`
+		Formats  map[string]string `json:"formats"`
+		Cost     string            `json:"cost"`
+		Text     string            `json:"text"`
+		Editions json.RawMessage   `json:"editions"`
 	}
 )
+
+// http://stackoverflow.com/questions/17156371/how-to-get-json-response-in-golang
+func getJSON(url string, target interface{}) error {
+	r, err := http.Get(url)
+	if err != nil {
+		return fmt.Errorf("Error retrieving %s: %+v", url, err)
+	}
+	defer r.Body.Close()
+
+	return json.NewDecoder(r.Body).Decode(target)
+}
 
 // NewMTGRetriever .
 func NewMTGRetriever(url string) *MTGRetriever {
 	return &MTGRetriever{URL: url}
 }
 
-// GetCard .
-func (mtgr MTGRetriever) GetCard(name string) (*MTGRetrieverResponse, error) {
-	url := mtgr.URL + name
-	r, err := http.NewRequest("GET", url, nil)
+// GetCards .
+func (mtgr MTGRetriever) GetCardsByName(name string) ([]MTGRetrieverResponseItem, error) {
+	url := mtgr.URL + "?name=" + name
+	resp := make([]MTGRetrieverResponseItem, 0)
+	err := getJSON(url, &resp)
 	if err != nil {
-		return nil, fmt.Errorf("Could not connect to %v", url)
+		return nil, err
 	}
 
-	decoder := json.NewDecoder(r.Body)
-	var resp MTGRetrieverResponse
-	err = decoder.Decode(&resp)
-	if err != nil {
-		return nil, fmt.Errorf("Could not parse the response from %v", url)
-	}
-
-	return &resp, nil
+	return resp, nil
 }

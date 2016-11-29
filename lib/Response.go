@@ -9,7 +9,7 @@ type Response struct {
 }
 
 // NewResponse .
-func NewResponse(card *MTGRetrieverResponse) *Response {
+func NewResponse(cards []MTGRetrieverResponseItem) *Response {
 	return &Response{}
 }
 
