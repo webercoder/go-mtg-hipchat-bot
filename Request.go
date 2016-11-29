@@ -1,40 +1,42 @@
 package main
 
-// Request .
-type Request struct {
-	Event     string      `json:"event"`
-	Item      RequestItem `json:"item"`
-	WebhookID int         `json:"webhook_id"`
-}
+type (
+	// Request .
+	Request struct {
+		Event     string      `json:"event"`
+		Item      RequestItem `json:"item"`
+		WebhookID int         `json:"webhook_id"`
+	}
 
-// RequestItem .
-type RequestItem struct {
-	Message RequestMessage `json:"message"`
-	Room    RequestRoom    `json:"room"`
-}
+	// RequestItem .
+	RequestItem struct {
+		Message RequestMessage `json:"message"`
+		Room    RequestRoom    `json:"room"`
+	}
 
-// RequestMessage .
-type RequestMessage struct {
-	Date     string `json:"date"`
-	From     User   `json:"from"`
-	ID       string `json:"id"`
-	Mentions []User `json:"mentions"`
-	Message  string `json:"message"`
-	Type     string `json:"type"`
-}
+	// RequestMessage .
+	RequestMessage struct {
+		Date     string `json:"date"`
+		From     User   `json:"from"`
+		ID       string `json:"id"`
+		Mentions []User `json:"mentions"`
+		Message  string `json:"message"`
+		Type     string `json:"type"`
+	}
 
-// RequestRoom .
-type RequestRoom struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
-}
+	// RequestRoom .
+	RequestRoom struct {
+		ID   int    `json:"id"`
+		Name string `json:"name"`
+	}
 
-// User .
-type User struct {
-	ID          int    `json:"id"`
-	MentionName string `json:"mention_name"`
-	Name        string `json:"name"`
-}
+	// User .
+	User struct {
+		ID          int    `json:"id"`
+		MentionName string `json:"mention_name"`
+		Name        string `json:"name"`
+	}
+)
 
 // Example:
 // {
