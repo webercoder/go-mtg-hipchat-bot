@@ -7,22 +7,22 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("MTGRetriever", func() {
-	Context("NewMTGRetriever", func() {
+var _ = Describe("DeckbrewService", func() {
+	Context("NewDeckbrewService", func() {
 		It("should create a retriever with a correct URL", func() {
-			fakeURL := "http://www.example.com"
-			mtgr := NewMTGRetriever(fakeURL)
-			Expect(mtgr).To(BeAssignableToTypeOf(&MTGRetriever{}))
-			Expect(mtgr.URL).To(Equal(fakeURL))
+			defaultURL := "https://api.deckbrew.com/mtg/cards"
+			mtgr := NewDeckbrewService()
+			Expect(mtgr).To(BeAssignableToTypeOf(&DeckbrewService{}))
+			Expect(mtgr.URL).To(Equal(defaultURL))
 		})
 	})
 
-	Context("GetCardsByName", func() {
+	Context("GetCardsByName (Functional Tests)", func() {
 		var (
-			mtgr *MTGRetriever
+			mtgr *DeckbrewService
 		)
 		BeforeEach(func() {
-			mtgr = NewMTGRetriever("https://api.deckbrew.com/mtg/cards")
+			mtgr = NewDeckbrewService()
 		})
 		It("should return the requested cards with no special characters in the name", func() {
 			cards, err := mtgr.GetCardsByName("Panharmonicon")

@@ -1,5 +1,7 @@
 package lib
 
+import "fmt"
+
 // Response .
 type Response struct {
 	Color         string `json:"color"`
@@ -9,8 +11,20 @@ type Response struct {
 }
 
 // NewResponse .
-func NewResponse(cards []MTGRetrieverResponseItem) *Response {
-	return &Response{}
+func NewResponse(cards []DeckbrewServiceResponseItem) *Response {
+	resp := &Response{
+		Color:         "green",
+		Notify:        false,
+		MessageFormat: "html",
+	}
+
+	str := fmt.Sprintf("Results (%d):<br>", len(cards))
+	for _, card := range cards {
+		str += card.Name + "<br>"
+	}
+	resp.Message = str
+
+	return resp
 }
 
 // {
