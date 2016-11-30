@@ -16,17 +16,17 @@ type Response struct {
 
 // GenerateTypeLine .
 func generateTypeLine(card DeckbrewServiceResponseItem) string {
-	str := ""
+	parts := make([]string, 0, 3)
 	if len(card.Supertypes) > 0 {
-		str += strings.Join(card.Supertypes, " ")
+		parts = append(parts, strings.Join(card.Supertypes, " "))
 	}
 	if len(card.Types) > 0 {
-		str += strings.Join(card.Types, " ")
+		parts = append(parts, strings.Join(card.Types, " "))
 	}
 	if len(card.Subtypes) > 0 {
-		str += " - " + strings.Join(card.Subtypes, " ")
+		parts = append(parts, "- "+strings.Join(card.Subtypes, " "))
 	}
-	return strings.Title(str)
+	return strings.Title(strings.Join(parts, " "))
 }
 
 // NewResponse .
