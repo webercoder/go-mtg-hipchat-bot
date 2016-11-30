@@ -3,7 +3,7 @@ package lib_test
 import (
 	"bytes"
 
-	. "github.com/webercoder/go-mtg-service/lib"
+	. "github.com/webercoder/go-mtg-hipchat-bot/lib"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

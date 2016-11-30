@@ -8,7 +8,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/webercoder/go-mtg-service/lib"
+	"github.com/webercoder/go-mtg-hipchat-bot/lib"
 )
 
 func usage(msg string) {
