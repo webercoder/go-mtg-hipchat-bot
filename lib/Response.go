@@ -5,6 +5,9 @@ import (
 	"fmt"
 )
 
+// MaxCards .
+const MaxCards int = 5
+
 // Response .
 type Response struct {
 	Color         string `json:"color"`
@@ -16,20 +19,20 @@ type Response struct {
 // NewResponse .
 func NewResponse(cards []DeckbrewServiceResponseItem) (*Response, error) {
 	resp := &Response{
-		Color:         "green",
+		Color:         "gray",
 		Notify:        false,
 		MessageFormat: "html",
 	}
 	tm := &TemplateManager{}
 	var cardsHTML bytes.Buffer
 
-	for _, card := range cards {
+	for _, card := range cards[:MaxCards] {
 		err := tm.Execute("card.html", card, &cardsHTML)
 		if err != nil {
 			return nil, err
 		}
 	}
-	resp.Message = fmt.Sprintf("<strong>%s</strong><ol>%s</ol>", fmt.Sprintf("Top %d Results:<br>", len(cards)), cardsHTML.String())
+	resp.Message = fmt.Sprintf("<strong>%s</strong><ol>%s</ol>", fmt.Sprintf("Top %d:<br>", len(cards)), cardsHTML.String())
 
 	return resp, nil
 }

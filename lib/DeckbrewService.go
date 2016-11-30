@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 type (
@@ -41,6 +42,18 @@ func getJSON(url string, target interface{}) error {
 	return json.NewDecoder(r.Body).Decode(target)
 }
 
+func (mtgr DeckbrewService) titleCaseStrArray(arr []string) []string {
+	return strings.Split(strings.Title(strings.Join(arr, " ")), " ")
+}
+
+func (mtgr DeckbrewService) cleanResponse(resp []DeckbrewServiceResponseItem) {
+	for i := range resp {
+		resp[i].Subtypes = mtgr.titleCaseStrArray(resp[i].Subtypes[:])
+		resp[i].Types = mtgr.titleCaseStrArray(resp[i].Types[:])
+		resp[i].Supertypes = mtgr.titleCaseStrArray(resp[i].Supertypes[:])
+	}
+}
+
 // NewDeckbrewService .
 func NewDeckbrewService() *DeckbrewService {
 	return &DeckbrewService{URL: "https://api.deckbrew.com/mtg/cards"}
@@ -54,6 +67,8 @@ func (mtgr DeckbrewService) GetCardsByName(name string) ([]DeckbrewServiceRespon
 	if err != nil {
 		return nil, err
 	}
+
+	mtgr.cleanResponse(resp)
 
 	return resp, nil
 }
