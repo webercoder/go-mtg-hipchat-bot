@@ -26,13 +26,14 @@ func NewResponse(cards []DeckbrewServiceResponseItem) (*Response, error) {
 	tm := &TemplateManager{}
 	var cardsHTML bytes.Buffer
 
-	for _, card := range cards[:MaxCards] {
+	subset := cards[:MaxCards]
+	for _, card := range subset {
 		err := tm.Execute("card.html", card, &cardsHTML)
 		if err != nil {
 			return nil, err
 		}
 	}
-	resp.Message = fmt.Sprintf("<strong>%s</strong><ol>%s</ol>", fmt.Sprintf("Top %d:<br>", len(cards)), cardsHTML.String())
+	resp.Message = fmt.Sprintf("<strong>Top Matches</strong><br><br>%s", cardsHTML.String())
 
 	return resp, nil
 }

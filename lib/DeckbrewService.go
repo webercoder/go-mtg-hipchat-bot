@@ -51,6 +51,7 @@ func (mtgr DeckbrewService) cleanResponse(resp []DeckbrewServiceResponseItem) {
 		resp[i].Subtypes = mtgr.titleCaseStrArray(resp[i].Subtypes[:])
 		resp[i].Types = mtgr.titleCaseStrArray(resp[i].Types[:])
 		resp[i].Supertypes = mtgr.titleCaseStrArray(resp[i].Supertypes[:])
+		resp[i].Text = strings.Replace(resp[i].Text, "\n", "<br>", -1)
 	}
 }
 
