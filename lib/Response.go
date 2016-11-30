@@ -3,6 +3,7 @@ package lib
 import (
 	"bytes"
 	"html/template"
+	"strings"
 )
 
 // Response .
@@ -21,9 +22,10 @@ func NewResponse(cards []DeckbrewServiceResponseItem) (*Response, error) {
 		MessageFormat: "html",
 	}
 	tm := &TemplateManager{}
-	var cardsHTML bytes.Buffer
+	cardsHTML := make([]string, len(cards))
 
-	for _, card := range cards {
+	for i, card := range cards {
+		var tempBuffer bytes.Buffer
 		templateObject := struct {
 			Name       string
 			Cost       string
@@ -39,12 +41,13 @@ func NewResponse(cards []DeckbrewServiceResponseItem) (*Response, error) {
 			card.Subtypes,
 			template.HTML(card.Text),
 		}
-		err := tm.Execute("card.html", templateObject, &cardsHTML)
+		err := tm.Execute("card.html", templateObject, &tempBuffer)
 		if err != nil {
 			return nil, err
 		}
+		cardsHTML[i] = tempBuffer.String()
 	}
-	resp.Message = cardsHTML.String()
+	resp.Message = strings.Join(cardsHTML, "<br><br>")
 
 	return resp, nil
 }
