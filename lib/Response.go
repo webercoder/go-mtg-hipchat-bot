@@ -2,11 +2,8 @@ package lib
 
 import (
 	"bytes"
-	"fmt"
+	"html/template"
 )
-
-// MaxCards .
-const MaxCards int = 5
 
 // Response .
 type Response struct {
@@ -26,14 +23,28 @@ func NewResponse(cards []DeckbrewServiceResponseItem) (*Response, error) {
 	tm := &TemplateManager{}
 	var cardsHTML bytes.Buffer
 
-	subset := cards[:MaxCards]
-	for _, card := range subset {
-		err := tm.Execute("card.html", card, &cardsHTML)
+	for _, card := range cards {
+		templateObject := struct {
+			Name       string
+			Cost       string
+			Supertypes []string
+			Types      []string
+			Subtypes   []string
+			Text       template.HTML
+		}{
+			card.Name,
+			card.Cost,
+			card.Supertypes,
+			card.Types,
+			card.Subtypes,
+			template.HTML(card.Text),
+		}
+		err := tm.Execute("card.html", templateObject, &cardsHTML)
 		if err != nil {
 			return nil, err
 		}
 	}
-	resp.Message = fmt.Sprintf("<strong>Top Matches</strong><br><br>%s", cardsHTML.String())
+	resp.Message = cardsHTML.String()
 
 	return resp, nil
 }

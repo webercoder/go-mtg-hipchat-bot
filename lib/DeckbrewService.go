@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"strings"
 )
 
@@ -62,7 +63,7 @@ func NewDeckbrewService() *DeckbrewService {
 
 // GetCardsByName .
 func (mtgr DeckbrewService) GetCardsByName(name string) ([]DeckbrewServiceResponseItem, error) {
-	url := mtgr.URL + "?name=" + name
+	url := mtgr.URL + "?name=" + url.QueryEscape(name)
 	resp := make([]DeckbrewServiceResponseItem, 0)
 	err := getJSON(url, &resp)
 	if err != nil {
