@@ -36,6 +36,13 @@ func NewResponse(cards []DeckbrewServiceResponseItem) (*Response, error) {
 		Notify:        false,
 		MessageFormat: "html",
 	}
+
+	if len(cards) == 0 {
+		resp.Color = "red"
+		resp.Message = "No cards were found."
+		return resp, nil
+	}
+
 	tm := &TemplateManager{}
 	cardsHTML := make([]string, len(cards))
 
