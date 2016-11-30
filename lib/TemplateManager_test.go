@@ -19,11 +19,13 @@ var _ = Describe("TemplateManager", func() {
 				Cost     string
 				TypeLine string
 				Text     string
+				Editions []string
 			}{
 				"Fake Card",
 				"3BRG",
 				"Legendary Global Artifact Creature - Elf Goblin",
 				"This is the card text.",
+				nil,
 			}
 			err := tm.Execute("card.html", card, &output)
 			Expect(err).ToNot(HaveOccurred())
