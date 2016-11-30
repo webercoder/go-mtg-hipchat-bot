@@ -43,15 +43,8 @@ func getJSON(url string, target interface{}) error {
 	return json.NewDecoder(r.Body).Decode(target)
 }
 
-func (mtgr DeckbrewService) titleCaseStrArray(arr []string) []string {
-	return strings.Split(strings.Title(strings.Join(arr, " ")), " ")
-}
-
 func (mtgr DeckbrewService) cleanResponse(resp []DeckbrewServiceResponseItem) {
 	for i := range resp {
-		resp[i].Subtypes = mtgr.titleCaseStrArray(resp[i].Subtypes[:])
-		resp[i].Types = mtgr.titleCaseStrArray(resp[i].Types[:])
-		resp[i].Supertypes = mtgr.titleCaseStrArray(resp[i].Supertypes[:])
 		resp[i].Text = strings.Replace(resp[i].Text, "\n", "<br>", -1)
 	}
 }

@@ -14,6 +14,21 @@ type Response struct {
 	MessageFormat string `json:"message_format"`
 }
 
+// GenerateTypeLine .
+func generateTypeLine(card DeckbrewServiceResponseItem) string {
+	str := ""
+	if len(card.Supertypes) > 0 {
+		str += strings.Join(card.Supertypes, " ")
+	}
+	if len(card.Types) > 0 {
+		str += strings.Join(card.Types, " ")
+	}
+	if len(card.Subtypes) > 0 {
+		str += " - " + strings.Join(card.Subtypes, " ")
+	}
+	return strings.Title(str)
+}
+
 // NewResponse .
 func NewResponse(cards []DeckbrewServiceResponseItem) (*Response, error) {
 	resp := &Response{
@@ -27,18 +42,14 @@ func NewResponse(cards []DeckbrewServiceResponseItem) (*Response, error) {
 	for i, card := range cards {
 		var tempBuffer bytes.Buffer
 		templateObject := struct {
-			Name       string
-			Cost       string
-			Supertypes []string
-			Types      []string
-			Subtypes   []string
-			Text       template.HTML
+			Name     string
+			Cost     string
+			TypeLine string
+			Text     template.HTML
 		}{
 			card.Name,
 			card.Cost,
-			card.Supertypes,
-			card.Types,
-			card.Subtypes,
+			generateTypeLine(card),
 			template.HTML(card.Text),
 		}
 		err := tm.Execute("card.html", templateObject, &tempBuffer)
