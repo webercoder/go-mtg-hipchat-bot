@@ -1,5 +1,5 @@
 <li>
-    <strong>{{.Name}}<strong> ({{.Cost}})<br>
+    <strong>{{.Name}}</strong> ({{.Cost}})<br>
     {{if .Supertypes}}{{range .Supertypes}}{{.}} {{end}}{{end}}{{if .Types}}{{range .Types}}{{.}} {{end}}{{end}}{{if .Subtypes}}- {{range .Subtypes}}{{.}} {{end}}{{end}}<br>
     {{.Text}}
 </li>
