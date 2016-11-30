@@ -28,7 +28,6 @@ var _ = Describe("TemplateManager", func() {
 			Expect(output.String()).To(ContainSubstring(card.Cost))
 			Expect(output.String()).To(ContainSubstring("Legendary Global Artifact Creature - Elf Goblin"))
 			Expect(output.String()).To(ContainSubstring(card.Text))
-
 		})
 	})
 })

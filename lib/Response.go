@@ -1,6 +1,9 @@
 package lib
 
-import "fmt"
+import (
+	"bytes"
+	"fmt"
+)
 
 // Response .
 type Response struct {
@@ -11,20 +14,24 @@ type Response struct {
 }
 
 // NewResponse .
-func NewResponse(cards []DeckbrewServiceResponseItem) *Response {
+func NewResponse(cards []DeckbrewServiceResponseItem) (*Response, error) {
 	resp := &Response{
 		Color:         "green",
 		Notify:        false,
 		MessageFormat: "html",
 	}
+	tm := &TemplateManager{}
+	var cardsHTML bytes.Buffer
 
-	str := fmt.Sprintf("Results (%d):<br>", len(cards))
 	for _, card := range cards {
-		str += card.Name + "<br>"
+		err := tm.Execute("card.html", card, &cardsHTML)
+		if err != nil {
+			return nil, err
+		}
 	}
-	resp.Message = str
+	resp.Message = fmt.Sprintf("<strong>%s</strong><ol>%s</ol>", fmt.Sprintf("Top %d Results:<br>", len(cards)), cardsHTML.String())
 
-	return resp
+	return resp, nil
 }
 
 // {

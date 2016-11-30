@@ -17,13 +17,24 @@ func main() {
 		var req lib.Request
 		err := decoder.Decode(&req)
 		if err != nil {
-			fmt.Fprintf(w, "Could not find the requested card.")
+			fmt.Fprintf(w, "Difficulty parsing HipChat request: %+v", err)
 			return
 		}
 
-		rsp := rc.HandleRequest(&req)
+		rsp, err := rc.HandleRequest(&req)
 
-		fmt.Fprintf(w, "Found your card: \n%+v", rsp)
+		if err != nil {
+			fmt.Fprintf(w, "Error finding your card: %+v", err)
+			return
+		}
+
+		b, err := json.Marshal(rsp)
+		if err != nil {
+			fmt.Fprintf(w, "Error creating JSON response for %+v: %+v", rsp, err)
+			return
+		}
+
+		fmt.Fprintf(w, "%s", string(b))
 	})
 
 	log.Fatal(http.ListenAndServe(":8080", nil))

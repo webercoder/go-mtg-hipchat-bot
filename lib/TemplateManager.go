@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"html/template"
 	"io"
+	"path"
+	"path/filepath"
+	"runtime"
 )
 
 // TemplateManager .
@@ -13,7 +16,9 @@ type TemplateManager struct {
 func (tm TemplateManager) loadTemplate(templateName string) (*template.Template, error) {
 	var err error
 	t := template.New(templateName)
-	templateFileName := fmt.Sprintf("tmpl/%s", templateName)
+	_, filename, _, _ := runtime.Caller(1)
+	cwd := path.Dir(filename)
+	templateFileName := filepath.Join(cwd, fmt.Sprintf("./tmpl/%s", templateName))
 	t, err = t.ParseFiles(templateFileName)
 	return t, err
 }
