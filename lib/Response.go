@@ -53,11 +53,13 @@ func NewResponse(cards []DeckbrewServiceResponseItem) (*Response, error) {
 			Cost     string
 			TypeLine string
 			Text     template.HTML
+			Editions []DeckbrewServiceResponseItemEdition
 		}{
 			card.Name,
 			card.Cost,
 			generateTypeLine(card),
 			template.HTML(card.Text),
+			card.Editions,
 		}
 		err := tm.Execute("card.html", templateObject, &tempBuffer)
 		if err != nil {

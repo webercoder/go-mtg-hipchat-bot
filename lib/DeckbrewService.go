@@ -16,19 +16,37 @@ type (
 
 	// DeckbrewServiceResponseItem .
 	DeckbrewServiceResponseItem struct {
-		Name       string            `json:"name"`
-		ID         string            `json:"id"`
-		URL        string            `json:"url"`
-		StoreURL   string            `json:"store_url"`
-		Supertypes []string          `json:"supertypes"`
-		Types      []string          `json:"types"`
-		Subtypes   []string          `json:"subtypes"`
-		Colors     []string          `json:"colors"`
-		CMC        int               `json:"cmc"`
-		Formats    map[string]string `json:"formats"`
-		Cost       string            `json:"cost"`
-		Text       string            `json:"text"`
-		Editions   json.RawMessage   `json:"editions"`
+		Name       string                               `json:"name"`
+		ID         string                               `json:"id"`
+		URL        string                               `json:"url"`
+		StoreURL   string                               `json:"store_url"`
+		Supertypes []string                             `json:"supertypes"`
+		Types      []string                             `json:"types"`
+		Subtypes   []string                             `json:"subtypes"`
+		Colors     []string                             `json:"colors"`
+		CMC        int                                  `json:"cmc"`
+		Formats    map[string]string                    `json:"formats"`
+		Cost       string                               `json:"cost"`
+		Text       string                               `json:"text"`
+		Editions   []DeckbrewServiceResponseItemEdition `json:"editions"`
+	}
+
+	// DeckbrewServiceResponseItemEdition .
+	DeckbrewServiceResponseItemEdition struct {
+		Set          string          `json:"set"`
+		SetID        string          `json:"set_id"`
+		Rarity       string          `json:"rarity"`
+		Artist       string          `json:"artist"`
+		MultiverseID int64           `json:"multiverse_id"`
+		Flavor       string          `json:"flavor"`
+		Number       string          `json:"number"`
+		Layout       string          `json:"layout"`
+		Price        json.RawMessage `json:"price"`
+		URL          string          `json:"url"`
+		ImageURL     string          `json:"image_url"`
+		SetURL       string          `json:"set_url"`
+		StoreURL     string          `json:"store_url"`
+		HTMLURL      string          `json:"html_url"`
 	}
 )
 

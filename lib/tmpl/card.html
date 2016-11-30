@@ -1,3 +1,4 @@
 <strong>{{.Name}}</strong>{{if .Cost}} {{.Cost}}{{end}}<br>
 <em>{{.TypeLine}}</em><br>
-{{.Text}}
+{{.Text}}<br>
+{{range .Editions}}<a href="{{.StoreURL}}">{{.SetID}}</a> {{end}}
