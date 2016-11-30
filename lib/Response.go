@@ -69,10 +69,3 @@ func NewResponse(cards []DeckbrewServiceResponseItem) (*Response, error) {
 
 	return resp, nil
 }
-
-// {
-//     "color": "green",
-//     "message": "It's going to be sunny tomorrow! (yey)",
-//     "notify": false,
-//     "message_format": "text"
-// }
