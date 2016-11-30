@@ -1,4 +1,4 @@
-<strong>{{.Name}}</strong>{{if .Cost}} {{.Cost}}{{end}}<br>
+<strong>{{.Name}}</strong> {{.Cost}}<br>
 <em>{{.TypeLine}}</em><br>
 {{.Text}}<br>
-<em>Gatherer: {{range .Editions}}<a href="http://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid={{.MultiverseID}}" title="{{.Set}}">{{.SetID}}</a> {{end}}</em>
+<em>Gatherer: {{range $i, $e := .Editions}}{{if $i}}, {{end}}<a href="http://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid={{$e.MultiverseID}}">{{$e.Set}}</a>{{end}}</em>
