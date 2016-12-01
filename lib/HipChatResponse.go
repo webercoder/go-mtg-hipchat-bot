@@ -2,12 +2,13 @@ package lib
 
 import (
 	"bytes"
+	"fmt"
 	"html/template"
 	"strings"
 )
 
-// Response .
-type Response struct {
+// HipChatResponse .
+type HipChatResponse struct {
 	Color         string `json:"color"`
 	Message       string `json:"message"`
 	Notify        bool   `json:"notify"`
@@ -29,24 +30,15 @@ func generateTypeLine(card DeckbrewServiceResponseItem) string {
 	return strings.Title(strings.Join(parts, " "))
 }
 
-// NewResponse .
-func NewResponse(cards []DeckbrewServiceResponseItem) (*Response, error) {
-	resp := &Response{
-		Color:         "gray",
-		Notify:        false,
-		MessageFormat: "html",
-	}
-
+func (r HipChatResponse) createMessage(cards []DeckbrewServiceResponseItem) string {
 	if len(cards) == 0 {
-		resp.Color = "red"
-		resp.Message = "No cards were found."
-		return resp, nil
+		return "No cards were found."
 	}
 
 	tm := &TemplateManager{}
-	cardsHTML := make([]string, len(cards))
+	cardsHTML := make([]string, 0, len(cards))
 
-	for i, card := range cards {
+	for _, card := range cards {
 		var tempBuffer bytes.Buffer
 		templateObject := struct {
 			Name     string
@@ -63,11 +55,33 @@ func NewResponse(cards []DeckbrewServiceResponseItem) (*Response, error) {
 		}
 		err := tm.Execute("card.html", templateObject, &tempBuffer)
 		if err != nil {
-			return nil, err
+			continue
 		}
-		cardsHTML[i] = tempBuffer.String()
+		cardsHTML = append(cardsHTML, tempBuffer.String())
 	}
-	resp.Message = strings.Join(cardsHTML, "<br><br>")
+	return strings.Join(cardsHTML, "<br><br>")
+}
 
-	return resp, nil
+// NewHipChatResponse .
+func NewHipChatResponse(resultSets [][]DeckbrewServiceResponseItem) *HipChatResponse {
+	resp := &HipChatResponse{
+		Color:         "gray",
+		Notify:        false,
+		MessageFormat: "html",
+	}
+
+	messages := make([]string, len(resultSets))
+	for i, cards := range resultSets {
+		messages[i] = resp.createMessage(cards)
+	}
+
+	if len(messages) == 1 {
+		resp.Message = messages[0]
+		return resp
+	}
+
+	for i, val := range messages {
+		resp.Message += fmt.Sprintf("<strong>RESULT SET %d</strong><br><br>%s", i+1, val)
+	}
+	return resp
 }
