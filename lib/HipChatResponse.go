@@ -81,7 +81,9 @@ func NewHipChatResponse(resultSets [][]DeckbrewServiceResponseItem) *HipChatResp
 	}
 
 	for i, val := range messages {
-		resp.Message += fmt.Sprintf("<strong>RESULT SET %d</strong><br><br>%s", i+1, val)
+		messages[i] = fmt.Sprintf("<strong>=== Matched Cards for Query #%d ===</strong><br>%s", i+1, val)
 	}
+	resp.Message = strings.Join(messages, "<br><br>")
+
 	return resp
 }
