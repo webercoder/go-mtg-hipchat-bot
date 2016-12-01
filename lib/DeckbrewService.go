@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"net/url"
 	"strings"
 )
 
@@ -51,7 +50,7 @@ type (
 )
 
 // http://stackoverflow.com/questions/17156371/how-to-get-json-response-in-golang
-func getJSON(url string, target interface{}) error {
+func (mtgr DeckbrewService) getJSON(url string, target interface{}) error {
 	r, err := http.Get(url)
 	if err != nil {
 		return fmt.Errorf("Error retrieving %s: %+v", url, err)
@@ -72,11 +71,11 @@ func NewDeckbrewService() *DeckbrewService {
 	return &DeckbrewService{URL: "https://api.deckbrew.com/mtg/cards"}
 }
 
-// GetCardsByName .
-func (mtgr DeckbrewService) GetCardsByName(name string) ([]DeckbrewServiceResponseItem, error) {
-	url := mtgr.URL + "?name=" + url.QueryEscape(name)
+// GetCardsByQuery .
+func (mtgr DeckbrewService) GetCardsByQuery(query string) ([]DeckbrewServiceResponseItem, error) {
+	url := mtgr.URL + query
 	resp := make([]DeckbrewServiceResponseItem, 0)
-	err := getJSON(url, &resp)
+	err := mtgr.getJSON(url, &resp)
 	if err != nil {
 		return nil, err
 	}
@@ -84,4 +83,15 @@ func (mtgr DeckbrewService) GetCardsByName(name string) ([]DeckbrewServiceRespon
 	mtgr.cleanResponse(resp)
 
 	return resp, nil
+}
+
+// GetCardsByQueries .
+func (mtgr DeckbrewService) GetCardsByQueries(queries []string) [][]DeckbrewServiceResponseItem {
+	results := make([][]DeckbrewServiceResponseItem, len(queries))
+	for i, val := range queries {
+		resultSet, _ := mtgr.GetCardsByQuery(val)
+		// Will be nil if cards couldn't be retrieved
+		results[i] = resultSet
+	}
+	return results
 }
