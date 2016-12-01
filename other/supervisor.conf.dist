@@ -1,0 +1,6 @@
+[program:go-mtg-hipchat-bot]
+command=/home/ubuntu/go/bin/go-mtg-hipchat-bot 8080
+autostart=true
+autorestart=true
+stderr_logfile=/var/log/go-mtg-hipchat-bot.err.log
+stdout_logfile=/var/log/go-mtg-hipchat-bot.out.log
