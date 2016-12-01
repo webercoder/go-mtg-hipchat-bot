@@ -9,8 +9,9 @@ type RequestController struct {
 // GetQueryFromRequest .
 func (rc RequestController) GetQueryFromRequest(r *Request) string {
 	msg := r.Item.Message.Message
-	if strings.HasPrefix(msg, "/mtg ") {
-		return msg[5:len(msg)]
+	i := strings.Index(msg, "/mtg")
+	if i >= 0 {
+		return msg[i+5 : len(msg)]
 	}
 	return msg
 }
