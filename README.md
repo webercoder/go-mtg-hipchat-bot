@@ -20,4 +20,12 @@ sudo supervisorctl reread
 sudo supervisorctl update
 ```
 
+To update and restart directly on the server:
+
+```
+go get -u github.com/webercoder/go-mtg-hipchat-bot
+go install github.com/webercoder/go-mtg-hipchat-bot
+sudo supervisorctl restart go-mtg-hipchat-bot
+```
+
 That's it for now.
