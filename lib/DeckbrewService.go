@@ -64,18 +64,6 @@ func (dbsvc DeckbrewService) getJSON(url string, target interface{}) error {
 func (dbsvc DeckbrewService) cleanResponse(resp []DeckbrewServiceResponseItem) {
 	for i := range resp {
 		resp[i].Text = strings.Replace(resp[i].Text, "\n", "<br>", -1)
-
-		iconReplacer := strings.NewReplacer(
-			"{C}", "(c)",
-			"{W}", "(w)",
-			"{U}", "(u)",
-			"{B}", "(b)",
-			"{R}", "(r)",
-			"{G}", "(g)",
-			"{T}", "(t)",
-		)
-		resp[i].Cost = iconReplacer.Replace(resp[i].Cost)
-		resp[i].Text = iconReplacer.Replace(resp[i].Text)
 	}
 }
 
