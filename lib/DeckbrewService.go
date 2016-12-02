@@ -50,7 +50,7 @@ type (
 )
 
 // http://stackoverflow.com/questions/17156371/how-to-get-json-response-in-golang
-func (mtgr DeckbrewService) getJSON(url string, target interface{}) error {
+func (dbsvc DeckbrewService) getJSON(url string, target interface{}) error {
 	r, err := http.Get(url)
 	if err != nil {
 		return fmt.Errorf("Error retrieving %s: %+v", url, err)
@@ -60,7 +60,7 @@ func (mtgr DeckbrewService) getJSON(url string, target interface{}) error {
 	return json.NewDecoder(r.Body).Decode(target)
 }
 
-func (mtgr DeckbrewService) cleanResponse(resp []DeckbrewServiceResponseItem) {
+func (dbsvc DeckbrewService) cleanResponse(resp []DeckbrewServiceResponseItem) {
 	for i := range resp {
 		resp[i].Text = strings.Replace(resp[i].Text, "\n", "<br>", -1)
 	}
@@ -72,24 +72,24 @@ func NewDeckbrewService() *DeckbrewService {
 }
 
 // GetCardsByQuery .
-func (mtgr DeckbrewService) GetCardsByQuery(query string) ([]DeckbrewServiceResponseItem, error) {
-	url := mtgr.URL + query
+func (dbsvc DeckbrewService) GetCardsByQuery(query string) ([]DeckbrewServiceResponseItem, error) {
+	url := dbsvc.URL + query
 	resp := make([]DeckbrewServiceResponseItem, 0)
-	err := mtgr.getJSON(url, &resp)
+	err := dbsvc.getJSON(url, &resp)
 	if err != nil {
 		return nil, err
 	}
 
-	mtgr.cleanResponse(resp)
+	dbsvc.cleanResponse(resp)
 
 	return resp, nil
 }
 
 // GetCardsByQueries .
-func (mtgr DeckbrewService) GetCardsByQueries(queries []string) [][]DeckbrewServiceResponseItem {
+func (dbsvc DeckbrewService) GetCardsByQueries(queries []string) [][]DeckbrewServiceResponseItem {
 	results := make([][]DeckbrewServiceResponseItem, len(queries))
 	for i, val := range queries {
-		resultSet, _ := mtgr.GetCardsByQuery(val)
+		resultSet, _ := dbsvc.GetCardsByQuery(val)
 		// Will be nil if cards couldn't be retrieved
 		results[i] = resultSet
 	}
