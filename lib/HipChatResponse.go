@@ -42,13 +42,13 @@ func (r HipChatResponse) createMessage(cards []DeckbrewServiceResponseItem) stri
 		var tempBuffer bytes.Buffer
 		templateObject := struct {
 			Name     string
-			Cost     string
+			Cost     template.HTML
 			TypeLine string
 			Text     template.HTML
 			Editions []DeckbrewServiceResponseItemEdition
 		}{
 			card.Name,
-			card.Cost,
+			template.HTML(card.Cost),
 			generateTypeLine(card),
 			template.HTML(card.Text),
 			card.Editions,

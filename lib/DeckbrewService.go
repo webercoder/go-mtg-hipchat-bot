@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"regexp"
 	"strings"
 )
 
@@ -63,19 +64,13 @@ func (dbsvc DeckbrewService) getJSON(url string, target interface{}) error {
 
 func (dbsvc DeckbrewService) cleanResponse(resp []DeckbrewServiceResponseItem) {
 	for i := range resp {
+		// Replace newlines in Text with <br>
 		resp[i].Text = strings.Replace(resp[i].Text, "\n", "<br>", -1)
 
-		iconReplacer := strings.NewReplacer(
-			"{C}", "(c)",
-			"{W}", "(w)",
-			"{U}", "(u)",
-			"{B}", "(b)",
-			"{R}", "(r)",
-			"{G}", "(g)",
-			"{T}", "(t)",
-		)
-		resp[i].Cost = iconReplacer.Replace(resp[i].Cost)
-		resp[i].Text = iconReplacer.Replace(resp[i].Text)
+		// Replace icons with images in cost and text
+		r, _ := regexp.Compile(`{([^\}]+)}`)
+		resp[i].Cost = r.ReplaceAllString(resp[i].Cost, "<img alt=\"${1}\" src=\"http://pub.webercoder.com/mtg/${1}.png\">")
+		resp[i].Text = r.ReplaceAllString(resp[i].Text, "<img alt=\"${1}\" src=\"http://pub.webercoder.com/mtg/${1}.png\">")
 	}
 }
 
