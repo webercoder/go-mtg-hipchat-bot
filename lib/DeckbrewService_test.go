@@ -27,20 +27,25 @@ var _ = Describe("DeckbrewService", func() {
 			dbsvc = NewDeckbrewService()
 		})
 		It("should return the requested cards with no special characters in the name", func() {
-			cards, err := dbsvc.GetCardsByQuery("?name=panharmonicon")
+			cards, err := dbsvc.GetCardsByQuery("?name=panharmonicon", 0)
 			Expect(err).ToNot(HaveOccurred())
 			Expect(cards).To(HaveLen(1))
 			Expect(cards[0].Name).To(ContainSubstring("Panharmonicon"))
 			Expect(cards[0].Types).To(ContainElement("artifact"))
 		})
 		It("should return the requested cards with a comma in the name", func() {
-			cards, err := dbsvc.GetCardsByQuery("?name=" + url.QueryEscape("Selvala,"))
+			cards, err := dbsvc.GetCardsByQuery("?name="+url.QueryEscape("Selvala,"), 0)
 			Expect(err).ToNot(HaveOccurred())
 			Expect(cards).To(HaveLen(2))
 			Expect(cards[0].Name).To(ContainSubstring("Explorer"))
 			Expect(cards[1].Name).To(ContainSubstring("Heart"))
 			Expect(cards[0].Types).To(ContainElement("creature"))
 			Expect(cards[1].Types).To(ContainElement("creature"))
+		})
+		It("should return the number of cards in the limit", func() {
+			cards, err := dbsvc.GetCardsByQuery("?name=lightning", 2)
+			Expect(err).ToNot(HaveOccurred())
+			Expect(cards).To(HaveLen(2))
 		})
 	})
 
@@ -53,7 +58,7 @@ var _ = Describe("DeckbrewService", func() {
 		})
 		It("should return the requested cards", func() {
 			queries := []string{"?name=" + url.QueryEscape("selvala, explorer"), "?name=" + url.QueryEscape("selvala,")}
-			cards := dbsvc.GetCardsByQueries(queries)
+			cards := dbsvc.GetCardsByQueries(queries, 0)
 			Expect(cards[0][0].Name).To(ContainSubstring("Explorer"))
 			Expect(cards[0][0].Types).To(ContainElement("creature"))
 			Expect(cards[1][0].Name).To(ContainSubstring("Explorer"))

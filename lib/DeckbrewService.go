@@ -72,12 +72,16 @@ func NewDeckbrewService() *DeckbrewService {
 }
 
 // GetCardsByQuery .
-func (dbsvc DeckbrewService) GetCardsByQuery(query string) ([]DeckbrewServiceResponseItem, error) {
+func (dbsvc DeckbrewService) GetCardsByQuery(query string, limit int) ([]DeckbrewServiceResponseItem, error) {
 	url := dbsvc.URL + query
 	resp := make([]DeckbrewServiceResponseItem, 0)
 	err := dbsvc.getJSON(url, &resp)
 	if err != nil {
 		return nil, err
+	}
+
+	if limit > 0 && len(resp) > limit {
+		resp = resp[0:limit]
 	}
 
 	dbsvc.cleanResponse(resp)
@@ -86,10 +90,10 @@ func (dbsvc DeckbrewService) GetCardsByQuery(query string) ([]DeckbrewServiceRes
 }
 
 // GetCardsByQueries .
-func (dbsvc DeckbrewService) GetCardsByQueries(queries []string) [][]DeckbrewServiceResponseItem {
+func (dbsvc DeckbrewService) GetCardsByQueries(queries []string, limit int) [][]DeckbrewServiceResponseItem {
 	results := make([][]DeckbrewServiceResponseItem, len(queries))
 	for i, val := range queries {
-		resultSet, _ := dbsvc.GetCardsByQuery(val)
+		resultSet, _ := dbsvc.GetCardsByQuery(val, limit)
 		// Will be nil if cards couldn't be retrieved
 		results[i] = resultSet
 	}

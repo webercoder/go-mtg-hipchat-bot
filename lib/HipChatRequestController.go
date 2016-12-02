@@ -8,6 +8,9 @@ import (
 	"strings"
 )
 
+// MaxCards .
+const MaxCards int = 5
+
 // HipChatRequestController .
 type HipChatRequestController struct {
 }
@@ -22,16 +25,17 @@ func (rc HipChatRequestController) GetQueryFromRequest(r *HipChatRequest) []stri
 	var i int
 	inlineRegexp, _ := regexp.Compile(`\[\[[^\]]+\]\]`)
 
-	if inlineRegexp.MatchString(msg) {
+	if inlineRegexp.MatchString(msg) { // Match [[card]] style first
 		results := inlineRegexp.FindAllString(msg, -1)
 		queries := make([]string, len(results))
 		for i, val := range results {
 			queries[i] = rc.constructNameQuery(val[2 : len(val)-2])
 		}
 		return queries
-	} else if i = strings.Index(msg, "/mtg"); i >= 0 {
+	} else if i = strings.Index(msg, "/mtg"); i >= 0 { // Match /mtg card-name-here style next
 		return []string{rc.constructNameQuery(msg[i+len("/mtg ") : len(msg)])}
 	}
+
 	return []string{rc.constructNameQuery(msg)}
 }
 
@@ -49,6 +53,6 @@ func (rc HipChatRequestController) HandleRequest(r *http.Request) *HipChatRespon
 	mtgr := NewDeckbrewService()
 	queries := rc.GetQueryFromRequest(hcreq)
 	fmt.Printf("Got: '%s'; Parsed: %+v\n", hcreq.Item.Message.Message, queries)
-	cards := mtgr.GetCardsByQueries(queries)
+	cards := mtgr.GetCardsByQueries(queries, MaxCards)
 	return NewHipChatResponse(cards)
 }
