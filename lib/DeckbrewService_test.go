@@ -74,6 +74,13 @@ var _ = Describe("DeckbrewService", func() {
 
 			cards = dbsvc.GetCardsByNames([]string{"Sol Ring"}, 0)
 			Expect(cards["Sol Ring"][0].Text).To(ContainSubstring("T.png"))
+
+			cards = dbsvc.GetCardsByNames([]string{"Reaper King"}, 0)
+			Expect(cards["Reaper King"][0].Cost).To(ContainSubstring("2W.png"))
+			Expect(cards["Reaper King"][0].Cost).To(ContainSubstring("2U.png"))
+			Expect(cards["Reaper King"][0].Cost).To(ContainSubstring("2B.png"))
+			Expect(cards["Reaper King"][0].Cost).To(ContainSubstring("2R.png"))
+			Expect(cards["Reaper King"][0].Cost).To(ContainSubstring("2G.png"))
 		})
 	})
 })

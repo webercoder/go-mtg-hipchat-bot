@@ -67,10 +67,15 @@ func (dbsvc DeckbrewService) cleanResponse(resp []DeckbrewServiceResponseItem) {
 		// Replace newlines in Text with <br>
 		resp[i].Text = strings.Replace(resp[i].Text, "\n", "<br>", -1)
 
+		// Replace 2/W, 2/U, 2/B, 2/R, 2/G with 2W, 2U, 2B, 2R, 2G
+		dualRegex, _ := regexp.Compile(`{2/([WUBRG])}`)
+		resp[i].Cost = dualRegex.ReplaceAllString(resp[i].Cost, "{2${1}}")
+		resp[i].Text = dualRegex.ReplaceAllString(resp[i].Text, "{2${1}}")
+
 		// Replace icons with images in cost and text
-		r, _ := regexp.Compile(`{([^\}]+)}`)
-		resp[i].Cost = r.ReplaceAllString(resp[i].Cost, "<img alt=\"${1}\" src=\"http://pub.webercoder.com/mtg/${1}.png\">")
-		resp[i].Text = r.ReplaceAllString(resp[i].Text, "<img alt=\"${1}\" src=\"http://pub.webercoder.com/mtg/${1}.png\">")
+		iconRegex, _ := regexp.Compile(`{([^\}]+)}`)
+		resp[i].Cost = iconRegex.ReplaceAllString(resp[i].Cost, "<img alt=\"${1}\" src=\"http://pub.webercoder.com/mtg/${1}.png\">")
+		resp[i].Text = iconRegex.ReplaceAllString(resp[i].Text, "<img alt=\"${1}\" src=\"http://pub.webercoder.com/mtg/${1}.png\">")
 	}
 }
 
