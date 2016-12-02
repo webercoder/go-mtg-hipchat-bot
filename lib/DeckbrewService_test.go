@@ -52,7 +52,7 @@ var _ = Describe("DeckbrewService", func() {
 			Expect(cards["lightning"]).To(HaveLen(2))
 		})
 		It("should only return one card when there is an exact match", func() {
-			cards := dbsvc.GetCardsByNames([]string{"blizzard"}, 5)
+			cards := dbsvc.GetCardsByNames([]string{"blizzard"}, 0)
 			Expect(cards["blizzard"]).To(HaveLen(1))
 		})
 		It("should return multiple requested cards", func() {
@@ -64,6 +64,24 @@ var _ = Describe("DeckbrewService", func() {
 			Expect(cards["selvala,"][1].Name).To(ContainSubstring("Heart"))
 			Expect(cards["selvala,"][0].Types).To(ContainElement("creature"))
 			Expect(cards["selvala,"][1].Types).To(ContainElement("creature"))
+		})
+		It("should replace tokens with icons", func() {
+			cards := dbsvc.GetCardsByNames([]string{"Chromanticore"}, 0)
+			Expect(cards["Chromanticore"][0].Cost).To(ContainSubstring("(w)"))
+			Expect(cards["Chromanticore"][0].Cost).To(ContainSubstring("(u)"))
+			Expect(cards["Chromanticore"][0].Cost).To(ContainSubstring("(b)"))
+			Expect(cards["Chromanticore"][0].Cost).To(ContainSubstring("(r)"))
+			Expect(cards["Chromanticore"][0].Cost).To(ContainSubstring("(g)"))
+
+			Expect(cards["Chromanticore"][0].Text).To(ContainSubstring("{2}"))
+			Expect(cards["Chromanticore"][0].Text).To(ContainSubstring("(w)"))
+			Expect(cards["Chromanticore"][0].Text).To(ContainSubstring("(u)"))
+			Expect(cards["Chromanticore"][0].Text).To(ContainSubstring("(b)"))
+			Expect(cards["Chromanticore"][0].Text).To(ContainSubstring("(r)"))
+			Expect(cards["Chromanticore"][0].Text).To(ContainSubstring("(g)"))
+
+			cards = dbsvc.GetCardsByNames([]string{"Sol Ring"}, 0)
+			Expect(cards["Sol Ring"][0].Text).To(ContainSubstring("(t)"))
 		})
 	})
 })
