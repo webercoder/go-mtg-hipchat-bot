@@ -63,27 +63,32 @@ func (r HipChatResponse) createMessage(cards []DeckbrewServiceResponseItem) stri
 }
 
 // NewHipChatResponse .
-func NewHipChatResponse(resultSets [][]DeckbrewServiceResponseItem) *HipChatResponse {
+func NewHipChatResponse(resultSets map[string][]DeckbrewServiceResponseItem) *HipChatResponse {
 	resp := &HipChatResponse{
 		Color:         "gray",
 		Notify:        false,
 		MessageFormat: "html",
 	}
 
-	messages := make([]string, len(resultSets))
-	for i, cards := range resultSets {
-		messages[i] = resp.createMessage(cards)
+	messages := make(map[string]string)
+	for name, cards := range resultSets {
+		messages[name] = resp.createMessage(cards)
 	}
 
 	if len(messages) == 1 {
-		resp.Message = messages[0]
-		return resp
+		for _, msg := range messages {
+			resp.Message = msg
+			return resp
+		}
 	}
 
-	for i, val := range messages {
-		messages[i] = fmt.Sprintf("<strong>=== Matched Cards for Query #%d ===</strong><br>%s", i+1, val)
+	finalMessages := make([]string, len(messages))
+	i := 0
+	for name, val := range messages {
+		finalMessages[i] = fmt.Sprintf("<strong>=== Matches for \"%s\" ===</strong><br>%s", name, val)
+		i = i + 1
 	}
-	resp.Message = strings.Join(messages, "<br><br>")
+	resp.Message = strings.Join(finalMessages, "<br><br>")
 
 	return resp
 }

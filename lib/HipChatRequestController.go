@@ -3,7 +3,6 @@ package lib
 import (
 	"fmt"
 	"net/http"
-	"net/url"
 	"regexp"
 	"strings"
 )
@@ -12,15 +11,10 @@ import (
 const MaxCards int = 5
 
 // HipChatRequestController .
-type HipChatRequestController struct {
-}
+type HipChatRequestController struct{}
 
-func (rc HipChatRequestController) constructNameQuery(str string) string {
-	return fmt.Sprintf("?name=%s", url.QueryEscape(str))
-}
-
-// GetQueryFromRequest .
-func (rc HipChatRequestController) GetQueryFromRequest(r *HipChatRequest) []string {
+// GetNamesFromRequest .
+func (rc HipChatRequestController) GetNamesFromRequest(r *HipChatRequest) []string {
 	msg := r.Item.Message.Message
 	var i int
 	inlineRegexp, _ := regexp.Compile(`\[\[[^\]]+\]\]`)
@@ -29,14 +23,14 @@ func (rc HipChatRequestController) GetQueryFromRequest(r *HipChatRequest) []stri
 		results := inlineRegexp.FindAllString(msg, -1)
 		queries := make([]string, len(results))
 		for i, val := range results {
-			queries[i] = rc.constructNameQuery(val[2 : len(val)-2])
+			queries[i] = val[2 : len(val)-2]
 		}
 		return queries
 	} else if i = strings.Index(msg, "/mtg"); i >= 0 { // Match /mtg card-name-here style next
-		return []string{rc.constructNameQuery(msg[i+len("/mtg ") : len(msg)])}
+		return []string{msg[i+len("/mtg ") : len(msg)]}
 	}
 
-	return []string{rc.constructNameQuery(msg)}
+	return []string{msg}
 }
 
 // HandleRequest .
@@ -50,9 +44,9 @@ func (rc HipChatRequestController) HandleRequest(r *http.Request) *HipChatRespon
 			Message:       "Could not parse the HipChat request (damn you Atlassian!)",
 		}
 	}
-	mtgr := NewDeckbrewService()
-	queries := rc.GetQueryFromRequest(hcreq)
-	fmt.Printf("Got: '%s'; Parsed: %+v\n", hcreq.Item.Message.Message, queries)
-	cards := mtgr.GetCardsByQueries(queries, MaxCards)
+	dbsvc := NewDeckbrewService()
+	names := rc.GetNamesFromRequest(hcreq)
+	fmt.Printf("Got: '%s'; Parsed: %+v\n", hcreq.Item.Message.Message, names)
+	cards := dbsvc.GetCardsByNames(names, MaxCards)
 	return NewHipChatResponse(cards)
 }

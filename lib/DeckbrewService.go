@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"strings"
 )
 
@@ -71,9 +72,17 @@ func NewDeckbrewService() *DeckbrewService {
 	return &DeckbrewService{URL: "https://api.deckbrew.com/mtg/cards"}
 }
 
-// GetCardsByQuery .
-func (dbsvc DeckbrewService) GetCardsByQuery(query string, limit int) ([]DeckbrewServiceResponseItem, error) {
-	url := dbsvc.URL + query
+func (dbsvc DeckbrewService) constructURL(queryMap map[string]string) string {
+	u, _ := url.Parse(dbsvc.URL)
+	q := u.Query()
+	for i, val := range queryMap {
+		q.Add(i, val)
+	}
+	u.RawQuery = q.Encode()
+	return u.String()
+}
+
+func (dbsvc DeckbrewService) getCardsByURL(url string, limit int) ([]DeckbrewServiceResponseItem, error) {
 	resp := make([]DeckbrewServiceResponseItem, 0)
 	err := dbsvc.getJSON(url, &resp)
 	if err != nil {
@@ -89,13 +98,19 @@ func (dbsvc DeckbrewService) GetCardsByQuery(query string, limit int) ([]Deckbre
 	return resp, nil
 }
 
-// GetCardsByQueries .
-func (dbsvc DeckbrewService) GetCardsByQueries(queries []string, limit int) [][]DeckbrewServiceResponseItem {
-	results := make([][]DeckbrewServiceResponseItem, len(queries))
-	for i, val := range queries {
-		resultSet, _ := dbsvc.GetCardsByQuery(val, limit)
-		// Will be nil if cards couldn't be retrieved
-		results[i] = resultSet
+// GetCardsByNames .
+func (dbsvc DeckbrewService) GetCardsByNames(names []string, limit int) map[string][]DeckbrewServiceResponseItem {
+	results := make(map[string][]DeckbrewServiceResponseItem)
+	for _, name := range names {
+		url := dbsvc.constructURL(map[string]string{"name": name})
+		resultSet, _ := dbsvc.getCardsByURL(url, limit)
+		for j, item := range resultSet {
+			if strings.ToLower(item.Name) == strings.ToLower(name) {
+				resultSet = resultSet[j : j+1]
+				break
+			}
+		}
+		results[name] = resultSet
 	}
 	return results
 }
