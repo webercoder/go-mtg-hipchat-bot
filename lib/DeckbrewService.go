@@ -68,9 +68,9 @@ func (dbsvc DeckbrewService) cleanResponse(resp []DeckbrewServiceResponseItem) {
 		resp[i].Text = strings.Replace(resp[i].Text, "\n", "<br>", -1)
 
 		// Replace 2/W, 2/U, 2/B, 2/R, 2/G with 2W, 2U, 2B, 2R, 2G
-		dualRegex, _ := regexp.Compile(`{2/([WUBRG])}`)
-		resp[i].Cost = dualRegex.ReplaceAllString(resp[i].Cost, "{2${1}}")
-		resp[i].Text = dualRegex.ReplaceAllString(resp[i].Text, "{2${1}}")
+		dualRegex, _ := regexp.Compile(`{(\w)/(\w)}`)
+		resp[i].Cost = dualRegex.ReplaceAllString(resp[i].Cost, "{${1}${2}}")
+		resp[i].Text = dualRegex.ReplaceAllString(resp[i].Text, "{${1}${2}}")
 
 		// Replace icons with images in cost and text
 		iconRegex, _ := regexp.Compile(`{([^\}]+)}`)
