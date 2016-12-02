@@ -65,22 +65,5 @@ var _ = Describe("DeckbrewService", func() {
 			Expect(cards["selvala,"][0].Types).To(ContainElement("creature"))
 			Expect(cards["selvala,"][1].Types).To(ContainElement("creature"))
 		})
-		It("should replace tokens with icons", func() {
-			cards := dbsvc.GetCardsByNames([]string{"Spore Frog"}, 0)
-			Expect(cards["Spore Frog"][0].Cost).To(ContainSubstring("G.png"))
-
-			cards = dbsvc.GetCardsByNames([]string{"Avacyn's Pilgrim"}, 0)
-			Expect(cards["Avacyn's Pilgrim"][0].Text).To(ContainSubstring("W.png"))
-
-			cards = dbsvc.GetCardsByNames([]string{"Sol Ring"}, 0)
-			Expect(cards["Sol Ring"][0].Text).To(ContainSubstring("T.png"))
-
-			cards = dbsvc.GetCardsByNames([]string{"Reaper King"}, 0)
-			Expect(cards["Reaper King"][0].Cost).To(ContainSubstring("2W.png"))
-			Expect(cards["Reaper King"][0].Cost).To(ContainSubstring("2U.png"))
-			Expect(cards["Reaper King"][0].Cost).To(ContainSubstring("2B.png"))
-			Expect(cards["Reaper King"][0].Cost).To(ContainSubstring("2R.png"))
-			Expect(cards["Reaper King"][0].Cost).To(ContainSubstring("2G.png"))
-		})
 	})
 })

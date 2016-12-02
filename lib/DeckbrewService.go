@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"regexp"
 	"strings"
 )
 
@@ -51,6 +50,11 @@ type (
 	}
 )
 
+// NewDeckbrewService .
+func NewDeckbrewService() *DeckbrewService {
+	return &DeckbrewService{URL: "https://api.deckbrew.com/mtg/cards"}
+}
+
 // http://stackoverflow.com/questions/17156371/how-to-get-json-response-in-golang
 func (dbsvc DeckbrewService) getJSON(url string, target interface{}) error {
 	r, err := http.Get(url)
@@ -60,28 +64,6 @@ func (dbsvc DeckbrewService) getJSON(url string, target interface{}) error {
 	defer r.Body.Close()
 
 	return json.NewDecoder(r.Body).Decode(target)
-}
-
-func (dbsvc DeckbrewService) cleanResponse(resp []DeckbrewServiceResponseItem) {
-	for i := range resp {
-		// Replace newlines in Text with <br>
-		resp[i].Text = strings.Replace(resp[i].Text, "\n", "<br>", -1)
-
-		// Replace 2/W, 2/U, 2/B, 2/R, 2/G with 2W, 2U, 2B, 2R, 2G
-		dualRegex, _ := regexp.Compile(`{(\w)/(\w)}`)
-		resp[i].Cost = dualRegex.ReplaceAllString(resp[i].Cost, "{${1}${2}}")
-		resp[i].Text = dualRegex.ReplaceAllString(resp[i].Text, "{${1}${2}}")
-
-		// Replace icons with images in cost and text
-		iconRegex, _ := regexp.Compile(`{([^\}]+)}`)
-		resp[i].Cost = iconRegex.ReplaceAllString(resp[i].Cost, "<img alt=\"${1}\" src=\"http://pub.webercoder.com/mtg/${1}.png\">")
-		resp[i].Text = iconRegex.ReplaceAllString(resp[i].Text, "<img alt=\"${1}\" src=\"http://pub.webercoder.com/mtg/${1}.png\">")
-	}
-}
-
-// NewDeckbrewService .
-func NewDeckbrewService() *DeckbrewService {
-	return &DeckbrewService{URL: "https://api.deckbrew.com/mtg/cards"}
 }
 
 func (dbsvc DeckbrewService) constructURL(queryMap map[string]string) string {
@@ -104,8 +86,6 @@ func (dbsvc DeckbrewService) getCardsByURL(url string, limit int) ([]DeckbrewSer
 	if limit > 0 && len(resp) > limit {
 		resp = resp[0:limit]
 	}
-
-	dbsvc.cleanResponse(resp)
 
 	return resp, nil
 }
